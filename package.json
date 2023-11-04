@@ -1,0 +1,22 @@
+{
+  "name": "neversort",
+  "version": "1.0.0",
+  "description": "The sorting algorithm that never sorts! But still results in a sorted array.... is it magic?",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jimbdooley/NeverSort.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jimbdooley/NeverSort/issues"
+  },
+  "homepage": "https://github.com/jimbdooley/NeverSort#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
