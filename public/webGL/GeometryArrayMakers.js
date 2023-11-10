@@ -201,26 +201,36 @@ function cubeCirclePNIT(N=4, keepAsCube=false) {
     for (let h = 1; h < 4; h++) {
         for (let i = 0; i < posLen; i += 4) {
             xform1(pos[i], pos[i+1], pos[i+2], h*0.5*Math.PI, pos)
-            tex.push(tex[i], tex[i+1], 0, 0)
+            tex.push(0, 0 ,0, 0)//tex.push(tex[i], tex[i+1], 0, 0)
             norm.push(0, 0, 1, 0)
         }
     }
     for (let h = 1; h < 4; h += 2) {
         for (let i = 0; i < posLen; i += 4) {
             xform2(pos[i], pos[i+1], pos[i+2], h*0.5*Math.PI, pos)
-            tex.push(tex[i], tex[i+1], 0, 0)
+            tex.push(0, 0 ,0, 0)//tex.push(tex[i], tex[i+1], 0, 0)
             norm.push(0, 0, 1, 0)
         }
     }
     for (let i = 0; i < pos.length / 4; i++) ind.push(i)
     for (let i = 0; i < ind.length; i+=3) setNaturalNormals(pos, norm, ind, i)
+
+    const th = 0.29
+    for (const arr of [pos, norm]) {
+        for (let i = 0; i < arr.length; i+=4) {
+            const newY = Math.cos(th) * arr[i+1] - Math.sin(th) * arr[i+2]
+            const newZ = Math.sin(th) * arr[i+1] + Math.cos(th) * arr[i+2]
+            arr[i+1] = newY
+            arr[i+2] = newZ
+        }
+    }
     return PosNormIndTex(pos, norm, ind, tex)
 }
 
 const PosNormIndTexs = {
     square: null,
     indicatorPNIT: indicatorPNIT(),
-    ball: cubeCirclePNIT(10),
+    ball: cubeCirclePNIT(35),
     setup() {
         this.square = objProperToPosNormIndTex(assets["objs/square.obj"])
     },

@@ -13,6 +13,16 @@ const DrawerBall = {
     mPos: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
     data: [0, 0, 0, 0,],
     bmpInPlace: {
+        "0": numToBmp("0", 0.4, 0.8, 1),
+        "1": numToBmp("1", 0.4, 0.8, 1),
+        "2": numToBmp("2", 0.4, 0.8, 1),
+        "3": numToBmp("3", 0.4, 0.8, 1),
+        "4": numToBmp("4", 0.4, 0.8, 1),
+        "5": numToBmp("5", 0.4, 0.8, 1),
+        "6": numToBmp("6", 0.4, 0.8, 1),
+        "7": numToBmp("7", 0.4, 0.8, 1),
+        "8": numToBmp("8", 0.4, 0.8, 1),
+        "9": numToBmp("9", 0.4, 0.8, 1),
         //"hand_bgr": Bitmap.createBitmap([[255, 238, 118, 0)], 1, 1, Bitmap.Config.ARGB_8888),
         "gearMetal": Bitmap.createBitmap([[255, 100, 100, 112]], 1, 1, Bitmap.Config.ARGB_8888),
         "letter": Bitmap.createBitmap([
@@ -87,6 +97,7 @@ const DrawerBall = {
         this.dataLoc = gl.getUniformLocation(this.shader.full, "u_data")
     },
 
+
     DIRECT_LIGHT: [0, 0, 1],
     LIGHT_30_85: [
         0.3,
@@ -94,9 +105,10 @@ const DrawerBall = {
         Math.sqrt(1 - 0.85 * 0.85) * Math.sqrt(1 - 0.3*0.3)
     ],
     LIGHT_RIGHT: [Math.sqrt(2)/2, 0, Math.sqrt(2)/2],
+    LIGHT_LEFT: [-Math.sqrt(1-0.94*0.94), 0, 0.94],
     BTN_NOT_PRESSED: [0.1, 0.3, Math.sqrt(0.9)],
     BTN_PRESSED: [0.65*0.1, 0.65*0.3, 0.65*Math.sqrt(0.9), ],
-    draw: function(o, bmpName, bufs, ballM, preUpdated=false, lightArray=this.DIRECT_LIGHT){
+    draw: function(o, bmpName, bufs, ballM, preUpdated=false, lightArray=this.LIGHT_LEFT){
         World.pvm.updateWithDisplayObjectBall(o)
         const m = World.pvm.m
 
@@ -141,14 +153,11 @@ const DrawerBall = {
             zz = 1 + Math.min(0.5, 0.05 * over) 
         }
         this.data[0] = zz
-        this.data[1] = zz < 1 ? Math.pow(1 / zz, 0.5) : 1 / zz
+        this.data[1] = zz < 1 ? Math.pow(1 / zz, 0.25) : 1//1 / zz
         gl.uniform4fv(this.dataLoc, this.data)
 
         gl.drawElements(gl.TRIANGLES, bufs.indArr.length, gl.UNSIGNED_SHORT, 0)
 
-        gl.disableVertexAttribArray(this.posLoc)
-        gl.disableVertexAttribArray(this.normLoc)
-        gl.disableVertexAttribArray(this.texLoc)
 
     },
 

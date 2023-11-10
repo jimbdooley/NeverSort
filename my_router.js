@@ -17,12 +17,22 @@ router.get('/get_all_assets', async function(req, res) {
     res.send(all_assets)
 });
 
+router.get('/get_drawable_filenames', async function(req, res) {
+  res.send(JSON.stringify({
+    "wood": "/excluded/O5GLL70.jpg"
+  }))
+})
+
 router.get('/webGL/:filename', function(req, res) {
   res.sendFile(__dirname + "/public/webGL/" + req.params.filename)
 })
 
 router.get('/Drawers/:filename', function(req, res) {
   res.sendFile(__dirname + "/public/Drawers/" + req.params.filename)
+})
+
+router.get('/excluded/:filename', function(req, res) {
+  res.sendFile(__dirname + "/public/excluded/" + req.params.filename)
 })
 
 router.get('/:filename', function(req, res) {

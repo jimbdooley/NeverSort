@@ -1,14 +1,52 @@
 
-function PVM(_width, _height, fov, camX, camY, camZ) {
+function dynamicPVM(_width, _height, fov, camX, camY, camZ, lookDx, lookDy, lookDz) {
     rtn = {}
+    rtn.camXYZ = [camX, camY, camZ]
+    rtn.lookAt = [camX + lookDx, camY+lookDy, camZ+lookDz]
+    rtn.up = [0, 0, 1]
+    rtn.lookDx = lookDx
+    rtn.lookDy = lookDy
+    rtn.lookDz = lookDz
+    rtn.tempArr = new Float32Array(16)
     rtn.p = perspective(null, _width / _height, fov)
-    rtn.v = invert4By4(lookAt([camX, camY, camZ], [0, 0, 0]), null)
+    rtn.v = invert4By4(lookAt(rtn.camXYZ, rtn.lookAt), null)
     rtn.m = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1])
     rtn.pv = mul4By4(rtn.p, rtn.v, null)
     rtn.pvm = new Float32Array(16)
+    
+    rtn.shiftCam = function(dx, dy, dz) {
+        this.camXYZ[0] += dx
+        this.camXYZ[1] += dy
+        this.camXYZ[2] += dz
+        lookAt(this.camXYZ, this.lookAt, this.up, this.tempArr)
+        invert4By4(this.tempArr, this.v)
+        mul4By4(this.p, this.v, this.pv)
+    }
+    rtn.setCam = function(x, y, z, lax, lay, laz) {
+        this.camXYZ[0] = x
+        this.camXYZ[1] = y
+        this.camXYZ[2] = z
+        this.lookAt[0] = x+lax
+        this.lookAt[1] = y+lay
+        this.lookAt[2] = z+laz
+        lookAt(this.camXYZ, this.lookAt, this.up, this.tempArr)
+        invert4By4(this.tempArr, this.v)
+        mul4By4(this.p, this.v, this.pv)
+    }
+    rtn.swapXY = function() {
+        let temp = this.camXYZ[0]
+        this.camXYZ[0] = this.camXYZ[1]
+        this.camXYZ[1] = temp
+        temp = this.lookAt[0]
+        this.lookAt[0] = this.lookAt[1]
+        this.lookAt[1] = temp
+    }
     rtn.updateWithDisplayObject = function(o) {
         skewRotRodTrans(this.m, o)
         mul4By4NewDest(this.pv, this.m, this.pvm)
+        lookAt(this.camXYZ, this.lookAt, this.up, this.tempArr)
+        invert4By4(this.tempArr, this.v)
+        mul4By4(this.p, this.v, this.pv)
     }
     
     rtn.updateWithDisplayObjectBall = function(o) {
@@ -18,7 +56,6 @@ function PVM(_width, _height, fov, camX, camY, camZ) {
         
     }
     return rtn
-
 }
 
 function Shader(vertCode, fragCode, name=null){

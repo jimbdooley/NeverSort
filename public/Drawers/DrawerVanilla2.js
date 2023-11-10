@@ -1,4 +1,26 @@
 
+function getShadowBmp(d=400) {
+    const pixels = []
+    for (let i = 0; i < d; i++) {
+        for (let j = 0; j < d; j++) {
+            const dx = 0.5*(d - 1) - i
+            const dy = 0.5*(d - 1) - j
+            const dist = Math.sqrt(dx*dx + dy*dy)
+            let intensity = 105-Math.round(Math.max(0, 100 * (i - 0.5*d) / (0.5*d)))
+            const edgeFactor = (255 - Math.min(dist, Math.max(0, 2 * dist - 1 * 0.5 * d)))*100/255
+            intensity = Math.min(intensity, edgeFactor) + (0.5-Math.random()) * 30
+            if (dist < 0.5*d) {
+                pixels.push([
+                    Math.round(Math.min(255, Math.max(0, intensity))), 
+                0, 0, 0])
+            } else {
+                pixels.push([0, 0, 0, 0])
+            }
+        }
+    }
+    return Bitmap.createBitmap(pixels, d, d, Bitmap.Config.ARGB_8888)
+}
+
 const DrawerVanilla2 = {
     posLoc: -1,
     normLoc: -1,
@@ -15,6 +37,11 @@ const DrawerVanilla2 = {
     shader: null,
 
     bmpInPlace: {
+        "tt": makeText("test"),
+        "s1": makeText("1) cut in half:"),
+        "s2": makeText("2) sort each half"),
+        "s3": makeText("3) merge"),
+        "shadow": getShadowBmp(),
         "red": Bitmap.createBitmap([[255, 255, 0, 0]], 1, 1, Bitmap.Config.ARGB_8888),
         "green": Bitmap.createBitmap([[255, 0, 255, 0]], 1, 1, Bitmap.Config.ARGB_8888),
         "blue": Bitmap.createBitmap([[255, 0, 0, 255]], 1, 1, Bitmap.Config.ARGB_8888),
@@ -110,9 +137,9 @@ const DrawerVanilla2 = {
         gl.uniformMatrix4fv(this.pvmLoc, false, World.pvm.pvm)
         gl.uniformMatrix4fv(this.mLoc, false, World.pvm.m)
 
-        //gl.activeTexture(gl.TEXTURE0)
-        //gl.bindTexture(gl.TEXTURE_2D, this.strToTexHandle[str])
-        //gl.uniform1i(this.samplerLoc, 0)
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_2D, this.strToTexHandle[str])
+        gl.uniform1i(this.samplerLoc, 0)
 
         gl.uniform4fv(this.lightDirLoc, lightDir)
 

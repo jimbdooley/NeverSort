@@ -37,6 +37,30 @@ function post(url, dataStr, time_limit_ms=5000) {
 let assets = null
 const drawable = {}
 
+
+function check_for_drawables_after_delay(delay) {
+  return new Promise(function(resolve, reject) {
+    setTimeout(() => {
+      let allDone = true
+      for (const key in drawable) {
+        allDone &= drawable[key].complete && drawable[key].naturalWidth !== 0
+      }
+      resolve(allDone)
+    }, delay)
+  })
+}
+
+
 async function getAllAssets() {
     assets = JSON.parse(await get("get_all_assets"))
+    const drawable_files_obj = JSON.parse(await get("get_drawable_filenames"))
+    for (const dr in drawable_files_obj) {
+      drawable[dr] = new Image()
+      drawable[dr].src = drawable_files_obj[dr]
+    }
+    let allDrawablesLoaded = false;
+    do {
+      allDrawablesLoaded = await check_for_drawables_after_delay(50)
+    } while (!allDrawablesLoaded)
+
 }

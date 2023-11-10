@@ -216,7 +216,7 @@ function skewRotRodTransX(m, o) {
     srrtxU[0] = Math.cos(o.thK)
     srrtxU[1] = Math.sin(o.thK)
     rotMatFromAxisAngle(srrtxU, o.thTilt, srrtxM)
-    m[0] = 1
+    m[0] = o.sz
     m[1] = 0
     m[2] = 0
     m[3] = 0
@@ -380,9 +380,9 @@ function invert4By4(m, _dst) {
 }
 
 // invert to use as View Matrix
-function lookAt(cameraPosition=[0, 0, CAM_Z],
-           target=[0, 0, 0],
+function lookAt(cameraPosition, target=[0, 0, 0],
            up=[0, 1, 0], _dst=null)  {
+            
     const dst = _dst == null ? new Float32Array([
         0, 0, 0, 0, 
         0, 0, 0, 0, 
