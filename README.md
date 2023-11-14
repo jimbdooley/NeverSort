@@ -1,2 +1,2 @@
 # NeverSort
-The sorting algorithm that never sorts! But still results in a sorted array.... is it magic?
+The sorting algorithm that never sorts... yet still results in a sorted array. Is it magic?
